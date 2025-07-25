@@ -71,6 +71,23 @@ namespace Localize.API.Endpoints
             })
             .WithName("RegisterCompany")
             .WithOpenApi();
+
+            app.MapGet("/companies/my", [Authorize] async (ApplicationDbContext db, ClaimsPrincipal user) =>
+            {
+                var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return Results.Unauthorized();
+                }
+
+                var companies = await db.Companies
+                                        .Where(c => c.UserId == userId)
+                                        .OrderBy(c => c.NomeEmpresarial) 
+                                        .ToListAsync();
+                return Results.Ok(companies);
+            })
+            .WithName("ListMyCompanies") 
+            .WithOpenApi();
         }
     }
 }
