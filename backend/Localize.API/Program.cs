@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Localize.API.Data;
+using Localize.API.Services;
+using Localize.API.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<AuthService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -19,5 +23,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapAuthEndpoints(); 
 
 app.Run();
