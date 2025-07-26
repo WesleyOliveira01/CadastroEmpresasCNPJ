@@ -16,6 +16,10 @@ namespace Localize.API.Services
 
         public async Task<ReceitaWsCompanyResponse?> GetCompanyDataByCnpjAsync(string cnpj)
         {
+            if (cnpj == null)
+            {
+                return null;
+            }
             cnpj = new string(cnpj.Where(char.IsDigit).ToArray());
 
             if (string.IsNullOrWhiteSpace(cnpj) || cnpj.Length != 14)
